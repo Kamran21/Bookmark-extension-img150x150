@@ -1,6 +1,17 @@
 {
-    "name": "Bookmark Page Images",
+    "name": "Opinya Bookmark images",
     "version": "1.0",
-    "description": "collect all page images (img tags) greater than 150x150 and add their addresses",
+    "description": "collect all page images by size and add their addresses as bookmarks",
+    "permissions": [
+        "bookmarks",
+        "activeTab"
+    ],
+    "background": {
+      "scripts": ["bookmark.js"],
+      "persistent": false
+    },
+    "browser_action": {
+        "default_title": "Bookmark images"
+    },
     "manifest_version": 2
   }
