@@ -1,0 +1,6 @@
+{
+    "name": "Bookmark Page Images",
+    "version": "1.0",
+    "description": "collect all page images (img tags) greater than 150x150 and add their addresses",
+    "manifest_version": 2
+  }
