@@ -26,7 +26,7 @@ chrome.browserAction.onClicked.addListener(function(tab) {
         const addBookmarks = id => {
             
             //Create Great Pics Folder
-            chrome.bookmarks.create({'parentId': '1', 'title': 'Great Pics'},function(newFolder) {
+            chrome.bookmarks.create({'parentId': id, 'title': 'Great Pics'},function(newFolder) {
                 
                 console.log("added folder: " + newFolder);
                 
