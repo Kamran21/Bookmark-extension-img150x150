@@ -7,39 +7,67 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 // Called when the user clicks on the browser action.
+
+
+
 chrome.browserAction.onClicked.addListener(function(tab) {
-    // No tabs or host permissions needed!
     
-
     console.log("Extension Clicked.");
+    chrome.tabs.executeScript(null, {"file": "app.js"});//.then(onExecuted,onError);
 
-    var url=tab.url;//window.location.href;
-    console.log('Turning ' + url + ' red!');
+// var url=document.location.href;
 
-    var domain = `http://xyz${url}xxxx`;
-    
-    var imges= document.getElementsByName('img');
-    imges=imges.filter( img => (img.attr('width') > 150) && (img.attr('height') > 150) );
-
-    //Create Great Pics Folder
-    chrome.bookmarks.create({'parentId': bookmarkBar.id, 'title': 'Great Pics'},function(newFolder) {
+    chrome.runtime.onMessage.addListener(function(data) {
         
-        console.log("added folder: " + newFolder.title);
+        console.log("data",data);
+
+        ///////////////////////////////////////////
         
-        //Create Page URL Folder
-        chrome.bookmarks.create({'parentId': bookmarkBar.id, 'title': url},function(newFolder) {
+        const addBookmarks = id => {
             
-            console.log("added folder: " + newFolder.title);
-            
-            //Create a bookmark
-            imges.forEeach( img => {
-                chrome.bookmarks.create({'parentId': extensionsFolderId,
-                               'title': domain + img.fullPath.split("/").pop(),
-                               'url': img.src});
+            //Create Great Pics Folder
+            chrome.bookmarks.create({'parentId': '1', 'title': 'Great Pics'},function(newFolder) {
+                
+                console.log("added folder: " + newFolder);
+                
+                //Create Page URL Folder
+                chrome.bookmarks.create({'parentId': newFolder.id, 'title': data.url},function(newFolder) {
+                    
+                    console.log("added folder: " + newFolder.title);
+                    
+                    //Create a bookmark
+                    data.images.forEach( img => {
+                        chrome.bookmarks.create({'parentId': newFolder.id,
+                                    'title': img.src,
+                                    'url': img.src});
+                    });
+
+                });
+
             });
 
-        });
+        };
+
+        function findBookmarksBar(id, folderName) {
+
+            chrome.bookmarks.getChildren(id, function(children) {
+                for (var i = 0; i < children.length; i++) {
+                    var bookmark = children[i];
+                    console.log(bookmark);
+                    console.debug(bookmark.title);
+                    if (bookmark.title == folderName) {
+                        addBookmarks(bookmark.id);
+                        return;
+                    }
+                }
+            });
+
+        }
+        // addBookmarks('1');
+        findBookmarksBar('0','Bookmarks bar');  // root folder
+        
     });
+
 });
   
 
